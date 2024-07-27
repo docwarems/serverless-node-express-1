@@ -14,6 +14,12 @@ app.get("/hello", (req, res, next) => {
   });
 });
 
+app.get("/hello2", (req, res, next) => {
+  return res.status(200).json({
+    message: "Hello from path hello2!",
+  });
+});
+
 app.use((req, res, next) => {
   return res.status(404).json({
     error: "Not Found",
