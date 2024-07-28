@@ -27,6 +27,10 @@ app.get("/ejs1", (req, res, next) => {
   res.render("ejs1");
 });
 
+app.get("/ejs2", (req, res, next) => {
+  res.render("ejs2");
+});
+
 app.use((req, res, next) => {
   return res.status(404).json({
     error: "Not Found",
