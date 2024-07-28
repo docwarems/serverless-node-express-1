@@ -24,7 +24,8 @@ app.get("/hello2", (req, res, next) => {
 });
 
 app.get("/ejs1", (req, res, next) => {
-  res.render("ejs1");
+  const name = "Michael";
+  res.render("ejs1", { name });
 });
 
 app.get("/ejs2", (req, res, next) => {
