@@ -1,9 +1,33 @@
 const serverless = require("serverless-http");
 const express = require("express");
-const app = express();
 var ejs = require('ejs');
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+const app = express();
 
 app.set("view engine", "ejs");
+
+const dbURI = process.env.MONGODB_URL;
+mongoose.set("strictQuery", false);
+
+// According to https://mongoosejs.com/docs/lambda.html has a global state and connection can be cached;
+let conn = null;
+if (conn == null) {
+  console.log("Connecting Mongoose...")
+  mongoose
+  .connect(dbURI)
+  .then((result) => conn = result)
+  .catch((err) => console.log(err));
+}
+
+// here we usually get "2" which means "connecting"
+console.log("mongoose.connection.readyState", mongoose.connection.readyState);
+
+// for a test we wait a short while amd log again; now we get "1" which means "connected"
+setTimeout(() => {
+  console.log("mongoose.connection.readyState", mongoose.connection.readyState);
+}, 1000);
 
 app.get("/", (req, res, next) => {
   return res.status(200).json({
@@ -26,6 +50,13 @@ app.get("/hello2", (req, res, next) => {
 app.get("/env", (req, res, next) => {
   return res.status(200).json({
     message: `Hello ${process.env.NAME} from path env`,
+  });
+});
+
+// TODO: hier bisher immer State 2 (connecting)
+app.get("/mongoose", (req, res, next) => {
+  return res.status(200).json({
+    message: `mongoose.connection.readyState ${mongoose.connection.readyState}`,
   });
 });
 
