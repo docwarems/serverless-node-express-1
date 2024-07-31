@@ -23,6 +23,12 @@ app.get("/hello2", (req, res, next) => {
   });
 });
 
+app.get("/env", (req, res, next) => {
+  return res.status(200).json({
+    message: `Hello ${process.env.NAME} from path env`,
+  });
+});
+
 app.get("/ejs1", (req, res, next) => {
   const name = "Michael";
   res.render("ejs1", { name });
