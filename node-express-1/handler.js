@@ -1,6 +1,6 @@
 const serverless = require("serverless-http");
 const express = require("express");
-var ejs = require('ejs');
+var ejs = require("ejs");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -11,14 +11,27 @@ app.set("view engine", "ejs");
 const dbURI = process.env.MONGODB_URL;
 mongoose.set("strictQuery", false);
 
+// this is the Cyclic way, and works here too. However, we don't make use of the global scope
+// mongoose
+// .connect(dbURI)
+// .then((result) => app.listen(process.env.EXPRESS_PORT))
+// .catch((err) => console.log(err));
+
 // According to https://mongoosejs.com/docs/lambda.html has a global state and connection can be cached;
+// also here: https://docs.aws.amazon.com/lambda/latest/operatorguide/global-scope.html
 let conn = null;
 if (conn == null) {
-  console.log("Connecting Mongoose...")
+  console.log("Connecting Mongoose...");
   mongoose
-  .connect(dbURI)
-  .then((result) => conn = result)
-  .catch((err) => console.log(err));
+    .connect(dbURI)
+    .then((result) => {
+      conn = result;
+      app.listen(process.env.EXPRESS_PORT);
+    })
+    .catch((err) => console.log(err));
+} else {
+  console.log("Use existing Mongoose connection...");
+  app.listen(process.env.EXPRESS_PORT);
 }
 
 // here we usually get "2" which means "connecting"
