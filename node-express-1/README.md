@@ -17,9 +17,7 @@ This template demonstrates how to develop and deploy a simple Node Express API s
 
 This template configures a single function, `api`, which is responsible for handling all incoming requests using the `httpApi` event. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). As the event is configured in a way to accept all incoming requests, the Express.js framework is responsible for routing and handling requests internally. This implementation uses the `serverless-http` package to transform the incoming event request payloads to payloads compatible with Express.js. To learn more about `serverless-http`, please refer to the [serverless-http README](https://github.com/dougmoscrop/serverless-http).
 
-## Usage
-
-### Deployment
+## Deployment
 
 Install dependencies with:
 
@@ -47,7 +45,7 @@ functions:
 
 _Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [`httpApi` event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/).
 
-### Invocation
+## Invocation
 
 After successful deployment, you can call the created application via HTTP:
 
@@ -61,7 +59,7 @@ Which should result in the following response:
 { "message": "Hello from root!" }
 ```
 
-### Local development
+## Local development
 
 The easiest way to develop and test your function is to use the `dev` command:
 
@@ -73,8 +71,24 @@ This will start a local emulator of AWS Lambda and tunnel your requests to and f
 
 Now you can invoke the function as before, but this time the function will be executed locally. Now you can develop your function locally, invoke it, and see the results immediately without having to re-deploy.
 
-When you are done developing, don't forget to run `serverless deploy` to deploy the function to the cloud.
+When you are done developing, don't forget to run
 
-#### Express notes
+```
+serverless deploy
+```
+
+to deploy the function to the cloud.
+
+If there are only change to code but not to configuration, deployment of the function is quicker using
+
+```
+serverless deploy function -f <function-name-in serverless.yml>
+```
+
+### Express notes
 
 I added the app.listen() handler to connect to MongoDB in it. When I rerun a request I got address xxxx:3000 already in use. I had to stop app with CTRL-C and restart it with "serverless dev" to fix this.
+
+## Typescript
+
+AWS and/or Serverless seems to be Typescript aware. At least for a simple one ts file app there was no tsc compilation necessary prior to a "serverless deploy".

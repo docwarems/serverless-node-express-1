@@ -7,9 +7,16 @@
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "mongoose": "^8.5.2",
-    "serverless-http": "^3.2.0"
+    "serverless-http": "^3.2.0",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   },
   "scripts": {
-    "start": "node ./handler.js"
+    "start": "node dist/handler.js",
+    "dev": "nodemon handler.ts"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21"
   }
 }

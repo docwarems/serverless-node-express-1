@@ -1,7 +1,7 @@
-const serverless = require("serverless-http");
-const express = require("express");
+import serverless from "serverless-http";
+import express from "express";
 var ejs = require("ejs");
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 require("dotenv").config();
 
 const app = express();
@@ -23,7 +23,7 @@ let conn = null;
 if (conn == null) {
   console.log("Connecting Mongoose...");
   mongoose
-    .connect(dbURI)
+    .connect(dbURI!)
     .then((result) => {
       conn = result;
       app.listen(process.env.EXPRESS_PORT);
@@ -62,7 +62,7 @@ app.get("/hello2", (req, res, next) => {
 
 app.get("/env", (req, res, next) => {
   return res.status(200).json({
-    message: `Hello ${process.env.NAME} from path env`,
+    message: `Hello ${process.env.NAME} from path env with`,
   });
 });
 
