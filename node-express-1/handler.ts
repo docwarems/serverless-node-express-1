@@ -3,6 +3,7 @@ import express from "express";
 var ejs = require("ejs");
 import mongoose from "mongoose";
 require("dotenv").config();
+import nodemailer from "nodemailer";
 
 const app = express();
 
@@ -61,6 +62,7 @@ app.get("/hello2", (req, res, next) => {
 });
 
 app.get("/env", (req, res, next) => {
+  console.log("env");
   return res.status(200).json({
     message: `Hello ${process.env.NAME} from path env with`,
   });
@@ -80,6 +82,53 @@ app.get("/ejs1", (req, res, next) => {
 
 app.get("/ejs2", (req, res, next) => {
   res.render("ejs2");
+});
+
+app.get("/mail", (req, res, next) => {
+  const mailTransporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT!),
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+    greetingTimeout: 1000 * 10,
+    logger:
+      !!process.env.SMTP_DEBUG &&
+      process.env.SMTP_DEBUG.toLowerCase() == "true",
+  });
+  mailTransporter.verify(function (error: any, success: any) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("SMTP server is ready to take our messages");
+    }
+  });
+
+  const mailOptions = {
+    from: process.env.SMTP_FROM,
+    to: process.env.EMAIL_TEST_RECIPIENT,
+    subject: "Test",
+    html: "Hello World",
+  };
+
+  let mailResult;
+  mailTransporter
+    .sendMail(mailOptions)
+    .then((result: any) => {
+      console.log("mail success");
+      mailResult = "mail success";
+      return res.status(200).json({
+        message: `Hello from mail; result is ${mailResult}`,
+      });
+    })
+    .catch((err: any) => {
+      console.log(err);
+      mailResult = "mail error";
+      return res.status(200).json({
+        message: `Hello from mail; result is ${mailResult}`,
+      });
+    });
 });
 
 app.use((req, res, next) => {
